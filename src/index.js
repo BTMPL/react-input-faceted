@@ -1,0 +1,153 @@
+import React from 'react';
+
+import { FacetsDropdown, FacetDropdownItem } from "./Dropdown.js";
+import { ActiveFacets, ActiveFacetsItem } from "./Active.js";
+
+
+export default class extends React.Component {
+
+  state = {
+    activeFacets: [],
+    hilightedIndex: -1,
+    open: false,
+    value: '',
+  }
+
+  defaultProps = {
+    facets: null,
+    preventDuplicates: true,
+    dropdownFacetTemplate: FacetDropdownItem,
+    activeFacetTemplate: ActiveFacetsItem
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.facets !== this.props.facets) {
+      this.setState({
+        open: nextProps.facets !== null
+      })
+    }
+  }
+
+  handleChange = (e) => {
+    const { value } = e.target;
+
+    // check if the value contains a facet name
+    if (value.indexOf(':') > -1) {
+      const [match, group, string] = value.match(/([a-zA-Z0-9]+):(.*)/);
+      this.props.getFacets(group, string);
+
+      this.setState({
+        group
+      })
+    }
+    else if (this.state.open) {
+      this.props.getFacets();
+    }
+    this.setState({
+      value
+    })
+  }
+
+  handleFacetSet = (facet) => {
+    const { group } = this.state;
+    const activeFacets = [...this.state.activeFacets, { ...facet, _group: group }]
+
+
+    this.setState((state) => {
+      return {
+        activeFacets,
+        value: state.value.replace(new RegExp(`${group}:(.*)`, 'i'), ''),
+        hilightedIndex: -1
+      }
+    }, () => {
+      this.props.setFacets(this.state.activeFacets);
+      this.inputNode.focus();
+    })
+  }
+
+  handleKeyDown = (e) => {
+    if (this.state.open) {
+      if (e.key === 'ArrowDown') {
+        this.setState({
+          hilightedIndex: (this.state.hilightedIndex + 1) % this.prepareFacets(this.props.facets, true).length
+        });
+        e.preventDefault();
+        return false;
+      }
+      else if (e.key === 'ArrowUp') {
+        this.setState({
+          hilightedIndex: (this.state.hilightedIndex - 1) % this.prepareFacets(this.props.facets, true).length
+        });
+        e.preventDefault();
+        return false;
+      }
+      else if (e.key === 'Enter' && this.state.hilightedIndex > -1) {
+        this.handleFacetSet(this.prepareFacets(this.props.facets, true)[this.state.hilightedIndex]);
+        e.preventDefault();
+        return false;
+      }
+    }
+
+    if (e.key === 'Backspace' && this.state.value === '') {
+      this.setState((state) => {
+        const activeFacets = state.activeFacets.length > 0 ? state.activeFacets.slice(0, state.activeFacets.length - 1) : [];
+        return {
+          activeFacets
+        }
+      }, () => {
+        this.props.setFacets(this.state.activeFacets);
+      })
+    }
+  }
+
+  prepareFacets = (facets, removeDuplicates = false) => {
+    let normalizedFacets = facets.map(facet => {
+      if (typeof facet !== 'object') facet = { value: facet };
+      return facet;
+    });
+
+    if (removeDuplicates && this.state.activeFacets.length > 0) {
+      normalizedFacets = normalizedFacets.filter(facet => {
+        let keep = true;
+        this.state.activeFacets.find(activeFacet => {
+          if (activeFacet.value === facet.value && activeFacet._group === this.state.group) {
+            keep = false;
+          }
+        })
+        return keep;
+      });
+    }
+
+    return normalizedFacets;
+  }
+
+  setRef = (el) => this.inputNode = el;
+
+  render() {
+    const { value, activeFacets, hilightedIndex } = this.state;
+    const { facets, activeFacetTemplate, dropdownFacetTemplate } = this.props;
+
+    return (
+      <div className="reactFacets">
+        <div className="reactFacets__Input">
+          {activeFacets && <ActiveFacets 
+                            template={activeFacetTemplate} 
+                            facets={this.prepareFacets(activeFacets)} />}
+
+          <input type="text"
+            ref={this.setRef}
+            value={value}
+            onChange={this.handleChange}
+            onKeyDown={this.handleKeyDown}
+          />
+
+        </div>
+        {facets && <FacetsDropdown 
+                    template={dropdownFacetTemplate} 
+                    facets={this.prepareFacets(facets, true)}
+                    hilightedIndex={hilightedIndex} 
+                    onChange={this.handleFacetSet} />}
+      </div>
+    )
+  }
+}

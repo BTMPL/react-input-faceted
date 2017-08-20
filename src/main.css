@@ -1,0 +1,50 @@
+.reactFacets {
+  position: relative;
+}
+
+.reactFacets__Input {
+  display: flex;  
+  flex-wrap: wrap;
+}
+
+.reactFacets__Input input {
+  flex: 1;
+  padding: 5px;
+}
+
+.facetsDropdown {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 100%;
+  background: white;
+  box-shadow: 0 0 1px #d3d3d3;
+  z-index: 10;
+  max-height: 150px;
+  overflow: auto;
+}
+
+.facetsDropdown__Item {
+  padding: 5px;
+  border-bottom: 1px solid #d3d3d3;
+}
+
+.facetsDropdown__Item.active, .facetsDropdown__Item:hover {
+  background: #e7e7e7;
+  cursor: pointer;
+}
+
+.activeFacets {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.activeFacets__Item {
+  background: green;
+  color: white;
+  padding: 5px;
+  margin-right: 2px;
+  margin-bottom: 2px;
+  flex: 1;
+  white-space: nowrap;
+}
