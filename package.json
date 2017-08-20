@@ -1,6 +1,6 @@
 {
   "name": "react-input-faceted",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A faceting / filtering component for React applications",
   "main": "lib/index.js",
   "scripts": {
@@ -9,6 +9,10 @@
     "build": "cross-env NODE_ENV=production babel src --out-dir lib",
     "prepublish": "yarn build"
   },
+  "files": [
+    "lib",
+    "src"
+  ],
   "keywords": [
     "input",
     "search",
