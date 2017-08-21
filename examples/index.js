@@ -48,7 +48,9 @@ class Search extends React.Component {
   }
 
   state = {
-    facets: null
+    facets: null,
+    value: '',
+    activeFacets: []
   }
 
   getFacets = (facet, value) => {
@@ -70,9 +72,9 @@ class Search extends React.Component {
     }
   }
 
-  setFacets = (facets) => {
+  onChange = (value, facets) => {
     this.setState({
-      facets: null,
+      value: value,
       activeFacets: facets
     })
   }
@@ -86,11 +88,12 @@ class Search extends React.Component {
           activeFacetTemplate={this.props.activeFacetTemplate}
 
           getFacets={this.getFacets}
-          setFacets={this.setFacets}
+          onChange={this.onChange}
           facets={this.state.facets}
         />
         <pre>
-          {JSON.stringify(this.state.activeFacets, null, 2)}
+          value: {this.state.value}<br />
+          facets: {JSON.stringify(this.state.activeFacets, null, 2)}
         </pre>
       </div>         
     )

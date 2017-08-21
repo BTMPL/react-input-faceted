@@ -31,21 +31,25 @@ export default class extends React.Component {
   handleChange = (e) => {
     const { value } = e.target;
 
+    const newState = {
+      acceptFacets: false,
+      value: value,
+    }
+
     // check if the value contains a facet name
     if (value.indexOf(':') > -1) {
       const [match, group, string] = value.match(/([a-zA-Z0-9]+):(.*)/);
       this.props.getFacets(group, string);
 
-      this.setState({
-        group
-      })
+      newState.group = group;
+      newState.acceptFacets = true;
     }
     else if (this.state.open) {
       this.props.getFacets();
     }
-    this.setState({
-      value
-    })
+    this.setState(newState, () => {
+      this.props.onChange(this.state.value, this.state.activeFacets);
+    })    
   }
 
   handleFacetSet = (facet) => {
@@ -57,10 +61,11 @@ export default class extends React.Component {
       return {
         activeFacets,
         value: state.value.replace(new RegExp(`${group}:(.*)`, 'i'), ''),
-        hilightedIndex: -1
+        hilightedIndex: -1,
+        acceptFacets: false
       }
     }, () => {
-      this.props.setFacets(this.state.activeFacets);
+      this.props.onChange(this.state.value, this.state.activeFacets);
       this.inputNode.focus();
     })
   }
@@ -95,7 +100,7 @@ export default class extends React.Component {
           activeFacets
         }
       }, () => {
-        this.props.setFacets(this.state.activeFacets);
+        this.props.onChange(this.state.value, this.state.activeFacets);
       })
     }
   }
@@ -124,7 +129,7 @@ export default class extends React.Component {
   setRef = (el) => this.inputNode = el;
 
   render() {
-    const { value, activeFacets, hilightedIndex } = this.state;
+    const { value, acceptFacets, activeFacets, hilightedIndex } = this.state;
     const { facets, activeFacetTemplate, dropdownFacetTemplate } = this.props;
 
     return (
@@ -142,7 +147,7 @@ export default class extends React.Component {
           />
 
         </div>
-        {facets && <FacetsDropdown 
+        {acceptFacets && facets && <FacetsDropdown 
                     template={dropdownFacetTemplate} 
                     facets={this.prepareFacets(facets, true)}
                     hilightedIndex={hilightedIndex} 

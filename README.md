@@ -18,4 +18,4 @@ TODO
 
 ## License
 
-[MIT](http://vjpr.mit-license.org)
+MIT
