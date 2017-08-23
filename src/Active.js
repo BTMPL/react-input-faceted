@@ -8,10 +8,13 @@ export class ActiveFacetsItem extends React.PureComponent {
     }
   }
   render() {
-    const { facet } = this.props;  
+    const { facet, clickToRemoveFacet } = this.props;  
 
     return (
-      <div className="activeFacets__Item" onClick={this.handleClick}>{facet.value}</div>
+      <div className={`activeFacets__Item ${clickToRemoveFacet ? 'activeFacets__Item--ctr': ''}`}
+        onClick={this.handleClick}>
+          {facet.value}
+      </div>
     )
   }
 }

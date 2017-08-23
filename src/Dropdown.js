@@ -27,7 +27,6 @@ export class FacetDropdownItem extends React.Component {
 export class FacetsDropdown extends React.Component {
   render() {      
     const { facets, onChange, hilightedIndex } = this.props;
-    console.log('fdr', facets.length);  
     return (
       <div className="facetsDropdown">
         {facets.map((facet, index) => <FacetDropdownItem 
