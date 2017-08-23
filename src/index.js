@@ -8,6 +8,7 @@ import { ActiveFacets, ActiveFacetsItem } from "./Active.js";
 export default class extends React.Component {
 
   static propTypes = {
+    clickToRemoveFacet: PropTypes.bool,
     preventDuplicates: PropTypes.bool,
     backspaceToRemove: PropTypes.bool,
 
@@ -27,12 +28,13 @@ export default class extends React.Component {
   }
 
   static defaultProps = {
+    clickToRemoveFacet: false,
     preventDuplicates: true,
     backspaceToRemove: true,
 
     facets: null,    
-    dropdownFacetTemplate: FacetDropdownItem,
-    activeFacetTemplate: ActiveFacetsItem
+    dropdownFacetTemplate: null,
+    activeFacetTemplate: null
   }
 
   componentWillReceiveProps(nextProps) {
@@ -62,9 +64,8 @@ export default class extends React.Component {
     else if (this.state.open) {
       this.props.getFacets();
     }
-    this.setState(newState, () => {
-      this.props.onChange(this.state.value, this.state.activeFacets);
-    })    
+    this.setState(newState);
+    this.props.onChange(newState.value, newState.activeFacets);
   }
 
   handleFacetSet = (facet) => {
@@ -121,6 +122,16 @@ export default class extends React.Component {
     }
   }
 
+  handleRemoveFacet = (remove) => {
+    this.setState((state) => {
+      return {
+        activeFacets: state.activeFacets.filter(facet => facet !== remove)
+      }
+    }, () => {
+      this.props.onChange(this.state.value, this.state.activeFacets);  
+    })
+  }
+
   prepareFacets = (facets, removeDuplicates = false) => {
     let normalizedFacets = facets.map(facet => {
       if (typeof facet !== 'object') facet = { value: facet };
@@ -145,13 +156,24 @@ export default class extends React.Component {
   setRef = (el) => this.inputNode = el;
 
   render() {
-    const { value, acceptFacets, activeFacets, hilightedIndex } = this.state;
-    const { facets, activeFacetTemplate, dropdownFacetTemplate } = this.props;
+    const { value, 
+      acceptFacets, 
+      activeFacets, 
+      hilightedIndex,
+     } = this.state;
+
+    const { facets, 
+      activeFacetTemplate, 
+      dropdownFacetTemplate, 
+      clickToRemoveFacet,
+     } = this.props;
 
     return (
       <div className="reactFacets">
         <div className="reactFacets__Input">
           {activeFacets && <ActiveFacets 
+                            clickToRemoveFacet={clickToRemoveFacet}
+                            onRemove={this.handleRemoveFacet}
                             template={activeFacetTemplate} 
                             facets={this.prepareFacets(activeFacets)} />}
 

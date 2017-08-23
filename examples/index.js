@@ -83,6 +83,7 @@ class Search extends React.Component {
     return (
       <div>
         <Input
+          clickToRemoveFacet={true}
           dropdownFacetTemplate={this.props.dropdownFacetTemplate}
           activeFacetTemplate={this.props.activeFacetTemplate}
 
