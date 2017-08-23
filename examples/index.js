@@ -24,7 +24,7 @@ const facets = {
 }
 
 const CustomActiveFacet = ({ facet }) => <div>{facet._group}: {facet.value}</div>
-const CustomDropdownFacet = ({facet}) => <div>Option: {facet.value}</div>
+const CustomDropdownFacet = ({ facet }) => <div>Option: {facet.value}</div>
 
 const App = () => {
   return (
@@ -83,7 +83,6 @@ class Search extends React.Component {
     return (
       <div>
         <Input
-
           dropdownFacetTemplate={this.props.dropdownFacetTemplate}
           activeFacetTemplate={this.props.activeFacetTemplate}
 

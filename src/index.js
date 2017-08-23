@@ -1,10 +1,23 @@
 import React from 'react';
+import PropTypes from "prop-types";
 
 import { FacetsDropdown, FacetDropdownItem } from "./Dropdown.js";
 import { ActiveFacets, ActiveFacetsItem } from "./Active.js";
 
 
 export default class extends React.Component {
+
+  static propTypes = {
+    preventDuplicates: PropTypes.bool,
+    backspaceToRemove: PropTypes.bool,
+
+    getFacets: PropTypes.func.isRequired,
+    onChange: PropTypes.func.isRequired,
+
+    facets: PropTypes.array,    
+    dropdownFacetTemplate: PropTypes.func,
+    activeFacetTemplate: PropTypes.func   
+  }
 
   state = {
     activeFacets: [],
@@ -13,9 +26,11 @@ export default class extends React.Component {
     value: '',
   }
 
-  defaultProps = {
-    facets: null,
+  static defaultProps = {
     preventDuplicates: true,
+    backspaceToRemove: true,
+
+    facets: null,    
     dropdownFacetTemplate: FacetDropdownItem,
     activeFacetTemplate: ActiveFacetsItem
   }
@@ -94,7 +109,7 @@ export default class extends React.Component {
     }
 
 
-    if (e.key === 'Backspace' && e.target.selectionStart === 0) {
+    if (e.key === 'Backspace' && this.props.backspaceToRemove && e.target.selectionStart === 0) {
       this.setState((state) => {
         const activeFacets = state.activeFacets.length > 0 ? state.activeFacets.slice(0, state.activeFacets.length - 1) : [];
         return {
