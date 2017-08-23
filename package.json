@@ -1,6 +1,6 @@
 {
   "name": "react-input-faceted",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "A faceting / filtering component for React applications",
   "main": "lib/index.js",
   "scripts": {

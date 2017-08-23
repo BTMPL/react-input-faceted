@@ -93,7 +93,8 @@ export default class extends React.Component {
       }
     }
 
-    if (e.key === 'Backspace' && this.state.value === '') {
+
+    if (e.key === 'Backspace' && e.target.selectionStart === 0) {
       this.setState((state) => {
         const activeFacets = state.activeFacets.length > 0 ? state.activeFacets.slice(0, state.activeFacets.length - 1) : [];
         return {
